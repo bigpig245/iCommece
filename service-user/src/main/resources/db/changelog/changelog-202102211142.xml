@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+  <changeSet id="202102211142" author="trangnt">
+    <comment>Create base tables</comment>
+    <sql>
+      create table service_user.user
+      (
+      id bigserial not null,
+      email varchar(1000) not null unique,
+      name varchar(500) not null,
+      phone_number varchar(20) not null,
+      address varchar(500) not null,
+      password varchar(64),
+      access_token varchar(64) not null,
+      created_by bigint,
+      last_modified_by bigint,
+      created_date timestamp,
+      last_modified_date timestamp,
+      constraint pk_user primary key ( id )
+      );
+
+      insert into service_user.user(email, name, phone_number, address, access_token)
+      values('trangne123@mailinator.com', 'Trang', '19001324', 'Ho Chi Minh City', 'b0f410d7-d274-4f01-bf44-777919fb484a');
+      insert into service_user.user(email, name, phone_number, address, access_token)
+      values('trangne12@mailinator.com', 'Another Trang', '19002800', 'Ho Chi Minh City', '746c9360-b9fa-477e-8359-3916e0b7ea51');
+
+
+      create table service_user.user_activity
+      (
+      id bigserial not null,
+      user_id bigint not null,
+      action varchar(50) not null,
+      url varchar(1000) not null,
+      query text,
+      tracked_date timestamp not null,
+      constraint pk_user_activity primary key ( id ),
+      constraint fk_user_activity_user foreign key (user_id) references service_user.user(id)
+      );
+    </sql>
+    <rollback>
+      drop table if exists service_user.user
+      drop table if exists service_user.user_delivery
+      drop table if exists service_user.user_activity
+    </rollback>
+  </changeSet>
+</databaseChangeLog>
